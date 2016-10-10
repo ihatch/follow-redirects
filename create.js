@@ -24,6 +24,7 @@ module.exports = function (_nativeProtocols) {
 
 	function execute(options, callback) {
 		var fetchedUrls = [];
+		var fetchedStatusCodes = [];
 		var clientRequest = cb();
 
 		// return a proxy to the request with separate event handling
@@ -40,9 +41,11 @@ module.exports = function (_nativeProtocols) {
 			if (res) {
 				var fetchedUrl = url.format(options);
 				fetchedUrls.unshift(fetchedUrl);
+				fetchedStatusCodes.unshift(res.statusCode ? res.statusCode : 0);
 
 				if (!isRedirect(res)) {
 					res.fetchedUrls = fetchedUrls;
+					res.fetchedStatusCodes = fetchedStatusCodes;
 					requestProxy.emit('response', res);
 					return;
 				}
